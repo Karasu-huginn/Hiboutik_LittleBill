@@ -13,3 +13,7 @@ def customer_search(last_name:str="", first_name:str="", email:str="", phone:str
     params = [f"{key}={value}" for key,value in params.items() if value != ""] #* deletes empty params
     params_str = "&".join(params)
     return HC.get_customer(params_str)
+
+@app.get("/sales/customer/{customer_id}")
+def customer_search(customer_id:int, page:int=1):
+    return HC.get_customer_sales(customer_id, page)

@@ -14,17 +14,16 @@ def gen_token():
     b64_str = b64_b.decode("ascii")
     return b64_str
 
-def get_customer_sales(customer_id):
+def get_customer_sales(customer_id, page):
     token = gen_token()
-    url = f"{API_URL}/sales/search?customer_id={customer_id}"
     headers = {"Accept": "*/*", "Authorization": "Basic "+token}
+    url = f"{API_URL}/sales/search?customer_id={customer_id}&p={page}"
     sales = requests.get(url, headers=headers)
     return sales.json()
 
 def get_customer(params):
     token = gen_token()
-    url = f"{API_URL}/customers/search?{params}"
-    print(url)
     headers = {"Accept": "*/*", "Authorization": "Basic "+token}
+    url = f"{API_URL}/customers/search?{params}"
     customers = requests.get(url, headers=headers)
     return customers.json()
