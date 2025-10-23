@@ -33,7 +33,7 @@ interface SalesListResponse {
 export function CustomerSales() {
     const { customer_id } = useParams();
     const [page, setPage] = useState(0);
-    const { isLoading, isError, error, data } = useQuery<SalesListResponse>({
+    const { isLoading, error, data } = useQuery<SalesListResponse>({
         queryKey: ['customer_sales', customer_id, page],
         queryFn: async () => {
             const res = await fetch(`http://127.0.0.1:8000/sales/customer/${customer_id}?page=${page}`, { mode: "cors" });
