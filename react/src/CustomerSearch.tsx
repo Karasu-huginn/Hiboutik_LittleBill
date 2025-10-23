@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
+import { Link } from "react-router";
 
 interface Customer {
     customers_id: number,
@@ -62,11 +63,13 @@ export function CustomerSearch() {
             <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "1rem" }}>
                 {data.count > 0 ? (
                     data.customers.map((result) => (
-                        <div key={result.customers_id} style={{ border: "1px solid #ccc", padding: "1rem" }}>
-                            <h2>{result.last_name} {result.first_name}</h2>
-                            <p>Email : {result.email}</p>
-                            <p>Pays : {result.country}</p>
-                        </div>
+                        <Link key={result.customers_id} to={`/customer-sales/${result.customers_id}`}>
+                            <div style={{ border: "1px solid #ccc", padding: "1rem" }}>
+                                <h2>{result.last_name} {result.first_name}</h2>
+                                <p>Email : {result.email}</p>
+                                <p>Pays : {result.country}</p>
+                            </div>
+                        </Link>
                     ))
                 ) : (
                     <h3>Aucun résultat trouvé. Essayez d'ajuster vos critères de recherche.</h3>
