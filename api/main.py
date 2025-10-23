@@ -26,4 +26,5 @@ def customer_search(last_name:str="", first_name:str="", email:str="", phone:str
 
 @app.get("/sales/customer/{customer_id}")
 def customer_search(customer_id:int, page:int=1):
-    return HC.get_customer_sales(customer_id, page)
+    sales = HC.get_customer_sales(customer_id, page)
+    return {"sales":sales[page*5:(page+1)*5], "count":5, "page":page, "last_page":(page+1)*5>=len(sales)}
