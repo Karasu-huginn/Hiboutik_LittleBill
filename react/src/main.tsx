@@ -5,7 +5,8 @@ import App from './App.tsx'
 import { createBrowserRouter, Outlet, RouterProvider } from 'react-router'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Navigation } from './Navigation.tsx'
-import { CustomerSalesSearch } from './CustomerSalesSearch.tsx'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import { CustomerSearch } from './CustomerSearch.tsx'
 
 const router = createBrowserRouter([
   {
@@ -25,7 +26,9 @@ const router = createBrowserRouter([
       },
       {
         path: "/customers",
-        element: <CustomerSalesSearch />
+        element: <>
+          <CustomerSearch />
+        </>
       },
     ]
   }
@@ -37,6 +40,7 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={query_client}>
       <RouterProvider router={router} />
+      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   </StrictMode>,
 )
