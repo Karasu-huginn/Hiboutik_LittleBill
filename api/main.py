@@ -69,7 +69,7 @@ def customer_search(user:user_dep, db:db_dep, last_name:str="", first_name:str="
         customers = HC.get_customer(params_str)
         for customer in customers:
             db_customer = models.Customers(
-                id=customer["customers_id"],
+                customers_id=customer["customers_id"],
                 last_name=customer["last_name"],
                 first_name=customer["first_name"], 
                 email=customer["email"], 
@@ -92,7 +92,7 @@ def customer_sales(user:user_dep, customer_id:int, db: db_dep, page:int=0):
         for sale in sales:
             #todo handle foreign key not found error
             db_sale = models.Sales(
-                id=sale["sale_id"],
+                sale_id=sale["sale_id"],
                 vendor_id=sale["vendor_id"],
                 customer_id=sale["customer_id"],
                 billing_address=sale["billing_address"],
