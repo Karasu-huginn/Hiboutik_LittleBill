@@ -91,3 +91,6 @@ test.py
 /react/*.njsproj
 /react/*.sln
 /react/*.sw?
+
+# db settings (contains creds)
+/api/pg_settings.json
