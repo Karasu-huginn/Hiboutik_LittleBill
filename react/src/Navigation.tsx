@@ -5,6 +5,7 @@ export function Navigation() {
         <div style={{ display: "flex", gap: "1rem", justifyContent: "center" }}>
             <Link to="/">Accueil</Link>
             <Link to="/customers">Customers</Link>
+            <Link to="/login">Login</Link>
         </div>
     )
 }
