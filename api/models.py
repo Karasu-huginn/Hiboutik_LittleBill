@@ -27,3 +27,9 @@ class Sales(Base):
     resource_id = Column(Integer, index=True)
     currency = Column(String, index=True)
 
+class Users(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, index=True)
+    username = Column(String, unique=True)
+    password = Column(String)

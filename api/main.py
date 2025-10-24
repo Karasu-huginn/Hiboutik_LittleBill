@@ -1,5 +1,5 @@
 from typing import Annotated, List
-from fastapi import Depends, FastAPI
+from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import or_
 import hiboutik_connector as HC
@@ -7,9 +7,11 @@ from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from db import get_db, engine
 import models
+import auth
 
 #* FastAPI Init
 app = FastAPI()
+app.include_router(auth.router)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5174","http://localhost:5173"],
@@ -21,6 +23,7 @@ app.add_middleware(
 #* DB ORM & dependencies
 models.Base.metadata.create_all(bind=engine)
 db_dep = Annotated[Session, Depends(get_db)]
+user_dep = Annotated[dict, Depends(auth.get_current_user)]
 
 class SaleBase(BaseModel):
     vendor_id:int
@@ -45,7 +48,10 @@ class CustomerBase(BaseModel):
 
 #* FastAPI Routes
 @app.get("/customer/search")
-def customer_search(db:db_dep, last_name:str="", first_name:str="", email:str="", phone:str="", country:str="", vat:str=""):
+def customer_search(user:user_dep, db:db_dep, last_name:str="", first_name:str="", email:str="", phone:str="", country:str="", vat:str=""):
+    if user is None:
+        raise HTTPException(status_code=401, detail="Authentication Failed")
+    
     customers = db.query(models.Customers).filter(or_(
         models.Customers.last_name==last_name,
         models.Customers.first_name==first_name, 
@@ -76,7 +82,10 @@ def customer_search(db:db_dep, last_name:str="", first_name:str="", email:str=""
     return {"customers":customers, "count":len(customers)}
 
 @app.get("/sales/customer/{customer_id}")
-def customer_search(customer_id:int, db: db_dep, page:int=0):
+def customer_search(user:user_dep, customer_id:int, db: db_dep, page:int=0):
+    if user is None:
+        raise HTTPException(status_code=401, detail="Authentication Failed")
+    
     sales = db.query(models.Sales).filter(models.Sales.customer_id == customer_id).all()
     if not sales:
         sales = HC.get_customer_sales(customer_id, page)
