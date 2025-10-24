@@ -82,7 +82,7 @@ def customer_search(user:user_dep, db:db_dep, last_name:str="", first_name:str="
     return {"customers":customers, "count":len(customers)}
 
 @app.get("/sales/customer/{customer_id}")
-def customer_search(user:user_dep, customer_id:int, db: db_dep, page:int=0):
+def customer_sales(user:user_dep, customer_id:int, db: db_dep, page:int=0):
     if user is None:
         raise HTTPException(status_code=401, detail="Authentication Failed")
     
