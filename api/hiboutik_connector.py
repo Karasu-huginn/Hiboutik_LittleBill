@@ -15,6 +15,7 @@ def gen_token():
     return b64_str
 
 def get_customer_sales(customer_id, page):
+    page += 1
     token = gen_token()
     headers = {"Accept": "*/*", "Authorization": "Basic "+token}
     url = f"{API_URL}/sales/search?customer_id={customer_id}&p={page}"
