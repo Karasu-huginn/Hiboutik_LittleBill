@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
+from sqlalchemy import Column, ForeignKey, Integer, String
 from db import Base
 
 class Customers(Base):
@@ -16,16 +16,16 @@ class Sales(Base):
     __tablename__ = "sales"
 
     sale_id = Column(Integer, primary_key=True, index=True)
-    vendor_id = Column(Integer, index=True)
+    vendor_id = Column(Integer)
     customer_id = Column(Integer, ForeignKey("customers.customers_id"))
-    billing_address = Column(Integer, index=True)
-    shipping_address = Column(Integer, index=True)
-    payment = Column(String, index=True)
-    ext_ref = Column(String, index=True)
-    store_id = Column(Integer, index=True)
-    takeaway = Column(Integer, index=True)
-    resource_id = Column(Integer, index=True)
-    currency = Column(String, index=True)
+    billing_address = Column(Integer)
+    shipping_address = Column(Integer)
+    payment = Column(String)
+    ext_ref = Column(String)
+    store_id = Column(Integer)
+    takeaway = Column(Integer)
+    resource_id = Column(Integer)
+    currency = Column(String)
 
 class Users(Base):
     __tablename__ = "users"

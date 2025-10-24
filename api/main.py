@@ -50,7 +50,7 @@ class CustomerBase(BaseModel):
 @app.get("/customer/search")
 def customer_search(user:user_dep, db:db_dep, last_name:str="", first_name:str="", email:str="", phone:str="", country:str="", vat:str=""):
     if user is None:
-        raise HTTPException(status_code=401, detail="Authentication Failed")
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Authentication Failed")
     
     customers = db.query(models.Customers).filter(or_(
         models.Customers.last_name==last_name,
@@ -60,13 +60,15 @@ def customer_search(user:user_dep, db:db_dep, last_name:str="", first_name:str="
         models.Customers.country==country, 
         models.Customers.vat==vat
         )).all()
-    # not optimal : perfect comparison instead of searching 
+    # not optimal : perfect comparison instead of searching
 
     if not customers:
         params = {"last_name":last_name, "first_name":first_name, "email":email, "phone":phone, "country":country, "vat":vat}
         params = [f"{key}={value}" for key,value in params.items() if value] #* deletes empty params
         params_str = "&".join(params)
         customers = HC.get_customer(params_str)
+        if not customers : 
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Customer not found")
         for customer in customers:
             db_customer = models.Customers(
                 customers_id=customer["customers_id"],
@@ -84,11 +86,13 @@ def customer_search(user:user_dep, db:db_dep, last_name:str="", first_name:str="
 @app.get("/sales/customer/{customer_id}")
 def customer_sales(user:user_dep, customer_id:int, db: db_dep, page:int=0):
     if user is None:
-        raise HTTPException(status_code=401, detail="Authentication Failed")
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Authentication Failed")
     
     sales = db.query(models.Sales).filter(models.Sales.customer_id == customer_id).all()
     if not sales:
         sales = HC.get_customer_sales(customer_id, page)
+        if not sales:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No sale found for this customer")
         for sale in sales:
             #todo handle foreign key not found error
             db_sale = models.Sales(

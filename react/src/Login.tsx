@@ -29,6 +29,9 @@ export function Login() {
         e.preventDefault();
         mutate({ username, password })
     }
+    if (isError) {
+        return <div>Erreur : {error.message}</div>
+    }
     if (isSuccess) {
         localStorage.setItem("token", `${data.token_type} ${data.access_token}`)
     }
@@ -37,10 +40,6 @@ export function Login() {
             'Connexion...'
         ) : (
             <>
-                {isError ? (
-                    <div>Erreur : {error.message}</div>
-                ) : null}
-
                 {isSuccess ? <div>Connecté !</div> : null}
                 <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column" }}>
                     <span>

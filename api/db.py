@@ -2,12 +2,18 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy_utils import database_exists, create_database
 from sqlalchemy.ext.declarative import declarative_base
-import json
+from dotenv import load_dotenv
+import os
 
 def get_engine():
-    with open("pg_settings.json","r") as file:
-        settings = json.loads(file.read())
-    db_url = f"postgresql://{settings["user"]}:{settings["pass"]}@{settings["host"]}:{settings["port"]}/{settings["db_name"]}"
+    load_dotenv()
+    user = os.getenv("USER")
+    password = os.getenv("PASSWORD")
+    host = os.getenv("HOST")
+    port = os.getenv("PORT")
+    db_name = os.getenv("DB_NAME")
+
+    db_url = f"postgresql://{user}:{password}@{host}:{port}/{db_name}"
     if not database_exists(db_url):
         create_database(db_url)
     return create_engine(db_url)

@@ -4,17 +4,17 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from starlette import status
-from db import get_db, SessionLocal
+from db import get_db
 from models import Users
 from passlib.context import CryptContext
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from jose import jwt, JWTError
-import json
+from dotenv import load_dotenv
+import os
 
-with open("pg_settings.json", "r") as file:
-    settings = json.loads(file.read())
-    hash_key = settings["hash_key"]
-    hash_algo = settings["hash_algo"]
+load_dotenv()
+hash_key = os.getenv("HASH_KEY")
+hash_algo = os.getenv("HASH_ALGO")
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -32,6 +32,8 @@ db_dep = Annotated[Session, Depends(get_db)]
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
 def create_user(db:db_dep, create_user_request: CreateUserRequest):
+    if db.query(Users).filter(Users.username == create_user_request.username).first():
+        raise HTTPException(status_code=409, detail="An account with this username already exists.")
     create_user_model = Users(
         username=create_user_request.username,
         password=bcrypt_context.hash(create_user_request.password)
