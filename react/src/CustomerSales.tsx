@@ -36,7 +36,11 @@ export function CustomerSales() {
     const { isLoading, error, data } = useQuery<SalesListResponse>({
         queryKey: ['customer_sales', customer_id, page],
         queryFn: async () => {
-            const res = await fetch(`http://127.0.0.1:8000/sales/customer/${customer_id}?page=${page}`, { mode: "cors" });
+            const res = await fetch(`http://127.0.0.1:8000/sales/customer/${customer_id}?page=${page}`, {
+                mode: "cors", headers: {
+                    'Authorization': localStorage.getItem("token") || ""
+                }
+            });
             if (!res.ok) throw new Error("Network response was not ok");
             return res.json();
         }, placeholderData: keepPreviousData

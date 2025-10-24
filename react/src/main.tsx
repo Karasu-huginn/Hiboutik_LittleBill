@@ -8,6 +8,8 @@ import { Navigation } from './Navigation.tsx'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { CustomerSearch } from './CustomerSearch.tsx'
 import { CustomerSales } from './CustomerSales.tsx'
+import { Login } from './Login.tsx'
+import { Signup } from './Signup.tsx'
 
 const router = createBrowserRouter([
   {
@@ -35,6 +37,18 @@ const router = createBrowserRouter([
         path: "/customer-sales/:customer_id",
         element: <>
           <CustomerSales />
+        </>
+      },
+      {
+        path: "/login",
+        element: <>
+          <Login />
+        </>
+      },
+      {
+        path: "/signup",
+        element: <>
+          <Signup />
         </>
       },
     ]

@@ -32,7 +32,11 @@ export function CustomerSearch() {
     const { isLoading, isError, error, data, refetch } = useQuery<CustomerListResponse>({
         queryKey: ['customer', email, last_name],
         queryFn: async () => {
-            const res = await fetch(`http://127.0.0.1:8000/customer/search?last_name=${last_name}&email=${email}`, { mode: "cors" });
+            const res = await fetch(`http://127.0.0.1:8000/customer/search?last_name=${last_name}&email=${email}`, {
+                mode: "cors", headers: {
+                    'Authorization': localStorage.getItem("token") || ""
+                }
+            });
             if (!res.ok) throw new Error("Network response was not ok");
             return res.json();
         },
