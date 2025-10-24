@@ -1,7 +1,7 @@
 from typing import Annotated, List
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy import or_
+from sqlalchemy import and_
 import hiboutik_connector as HC
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
@@ -52,15 +52,26 @@ def customer_search(user:user_dep, db:db_dep, last_name:str="", first_name:str="
     if user is None:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Authentication Failed")
     
-    customers = db.query(models.Customers).filter(or_(
-        models.Customers.last_name==last_name,
-        models.Customers.first_name==first_name, 
-        models.Customers.email==email, 
-        models.Customers.phone==phone, 
-        models.Customers.country==country, 
-        models.Customers.vat==vat
-        )).all()
-    # not optimal : perfect comparison instead of searching
+    filters = []
+    if last_name:
+        filters.append(models.Customers.last_name == last_name)
+    if first_name:
+        filters.append(models.Customers.first_name == first_name)
+    if email:
+        filters.append(models.Customers.email == email)
+    if phone:
+        filters.append(models.Customers.phone == phone)
+    if country:
+        filters.append(models.Customers.country == country)
+    if vat:
+        filters.append(models.Customers.vat == vat)
+    query = db.query(models.Customers)
+    if filters:
+        query = query.filter(and_(*filters))
+    else:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Search must have at least one parameter")
+    customers = query.all()
+    #* not optimal : perfect comparison instead of searching
 
     if not customers:
         params = {"last_name":last_name, "first_name":first_name, "email":email, "phone":phone, "country":country, "vat":vat}
@@ -69,6 +80,7 @@ def customer_search(user:user_dep, db:db_dep, last_name:str="", first_name:str="
         customers = HC.get_customer(params_str)
         if not customers : 
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Customer not found")
+        print(customers)
         for customer in customers:
             db_customer = models.Customers(
                 customers_id=customer["customers_id"],
