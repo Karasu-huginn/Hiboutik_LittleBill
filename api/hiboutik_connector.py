@@ -1,14 +1,13 @@
 import base64
 import requests
-import json
+from dotenv import load_dotenv
+import os
+load_dotenv()
 
-with open("creds.json", "r") as file:
-    creds = json.loads(file.read())
-
-API_URL = f"https://{creds["account"]}.hiboutik.com/api"
+API_URL = f"https://{os.getenv("ACCOUNT")}.hiboutik.com/api"
 
 def gen_token():
-    string = f"{creds["api_login"]}:{creds["api_key"]}"
+    string = f"{os.getenv("API_LOGIN")}:{os.getenv("API_KEY")}"
     string_bytes = string.encode("ascii")
     b64_b = base64.b64encode(string_bytes)
     b64_str = b64_b.decode("ascii")
