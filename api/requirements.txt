@@ -1,0 +1,13 @@
+sqlalchemy
+uvicorn
+fastapi
+typing
+pydantic
+dotenv
+bcrypt == 4.3.0
+passlib
+python-multipart
+python-jose[cryptography]
+requests
+sqlalchemy_utils
+psycopg2-binary

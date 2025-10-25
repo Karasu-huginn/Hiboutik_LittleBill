@@ -9,11 +9,10 @@ def get_engine():
     load_dotenv()
     user = os.getenv("USER")
     password = os.getenv("PASSWORD")
-    host = os.getenv("HOST")
     port = os.getenv("PORT")
     db_name = os.getenv("DB_NAME")
 
-    db_url = f"postgresql://{user}:{password}@{host}:{port}/{db_name}"
+    db_url = f"postgresql://{user}:{password}@db:{port}/{db_name}"
     if not database_exists(db_url):
         create_database(db_url)
     return create_engine(db_url)
